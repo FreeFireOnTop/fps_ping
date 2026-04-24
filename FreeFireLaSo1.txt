@@ -1,0 +1,123 @@
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Name = "OrderUI"
+gui.Parent = player:WaitForChild("PlayerGui")
+gui.ResetOnSpawn = false
+
+local Stats = game:GetService("Stats")
+
+local DEFAULT_NAME = "Quang Vinh"
+local DEFAULT_ORDER = "Quang Vinh"
+
+player:SetAttribute("SavedName", player:GetAttribute("SavedName") or DEFAULT_NAME)
+player:SetAttribute("SavedOrder", player:GetAttribute("SavedOrder") or DEFAULT_ORDER)
+local RunService = game:GetService("RunService")
+
+-- FPS + Ping Frame
+local infoFrame = Instance.new("Frame")
+infoFrame.Parent = gui
+infoFrame.Size = UDim2.new(0, 180, 0, 75)
+infoFrame.Position = UDim2.new(0.02, 0, 0.02, 0)
+infoFrame.BackgroundColor3 = Color3.fromRGB(18,18,25)
+infoFrame.BorderSizePixel = 0
+infoFrame.Active = true
+infoFrame.Draggable = true
+
+Instance.new("UICorner", infoFrame).CornerRadius = UDim.new(0, 12)
+
+local infoStroke = Instance.new("UIStroke")
+infoStroke.Parent = infoFrame
+infoStroke.Color = Color3.fromRGB(0,170,255)
+infoStroke.Thickness = 2
+
+local infoTitle = Instance.new("TextLabel")
+infoTitle.Parent = infoFrame
+infoTitle.Size = UDim2.new(1,0,0,22)
+infoTitle.BackgroundTransparency = 1
+infoTitle.Text = "📊 STATUS"
+infoTitle.TextColor3 = Color3.fromRGB(255,255,255)
+infoTitle.Font = Enum.Font.GothamBold
+infoTitle.TextSize = 14
+
+local fpsLabel = Instance.new("TextLabel")
+fpsLabel.Parent = infoFrame
+fpsLabel.Size = UDim2.new(1,-20,0,20)
+fpsLabel.Position = UDim2.new(0,10,0,25)
+fpsLabel.BackgroundTransparency = 1
+fpsLabel.Text = "FPS: Loading..."
+fpsLabel.Font = Enum.Font.GothamBold
+fpsLabel.TextSize = 14
+fpsLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local pingLabel = Instance.new("TextLabel")
+pingLabel.Parent = infoFrame
+pingLabel.Size = UDim2.new(1,-20,0,20)
+pingLabel.Position = UDim2.new(0,10,0,45)
+pingLabel.BackgroundTransparency = 1
+pingLabel.Text = "Ping: Loading..."
+pingLabel.Font = Enum.Font.GothamBold
+pingLabel.TextSize = 14
+pingLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Main Order Frame
+local frame = Instance.new("Frame")
+frame.Parent = gui
+frame.Size = UDim2.new(0, 340, 0, 90)
+frame.Position = UDim2.new(0.35, 0, 0.15, 0)
+frame.BackgroundColor3 = Color3.fromRGB(18,18,25)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+local stroke = Instance.new("UIStroke")
+stroke.Parent = frame
+stroke.Color = Color3.fromRGB(255,70,120)
+stroke.Thickness = 2
+
+local orderText = Instance.new("TextLabel")
+orderText.Parent = frame
+orderText.Size = UDim2.new(1, -90, 0, 25)
+orderText.Position = UDim2.new(0, 15, 0, 28)
+orderText.BackgroundTransparency = 1
+orderText.Text = "Đơn: fish 2 gear"
+orderText.Font = Enum.Font.GothamBold
+orderText.TextSize = 16
+orderText.TextXAlignment = Enum.TextXAlignment.Left
+
+local nameText = Instance.new("TextLabel")
+nameText.Parent = frame
+nameText.Size = UDim2.new(1, -90, 0, 25)
+nameText.Position = UDim2.new(0, 15, 0, 55)
+nameText.BackgroundTransparency = 1
+nameText.Text = "Tên: Huỳnh*****"
+nameText.Font = Enum.Font.GothamBold
+nameText.TextSize = 16
+nameText.TextXAlignment = Enum.TextXAlignment.Left
+
+local editBtn = Instance.new("TextButton")
+editBtn.Parent = frame
+editBtn.Size = UDim2.new(0, 65, 0, 32)
+editBtn.Position = UDim2.new(1, -75, 0, 28)
+editBtn.Text = "✏ Sửa"
+
+editBtn.MouseButton1Click:Connect(function()
+	print("Open edit panel here")
+end)
+
+-- FPS Update
+local frames = 0
+local lastTime = tick()
+
+RunService.RenderStepped:Connect(function()
+	frames += 1
+	if tick() - lastTime >= 1 then
+		fpsLabel.Text = "FPS: " .. tostring(frames)
+		frames = 0
+		lastTime = tick()
+	end
+
+	local ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+	pingLabel.Text = "Ping: " .. tostring(ping) .. " ms"
+end)
